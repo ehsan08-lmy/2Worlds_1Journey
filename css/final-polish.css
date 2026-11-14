@@ -1,0 +1,204 @@
+/* Final release polish: Endterm defense feedback fixes. */
+
+/* Photo credits: accessible, single-open accordion enhanced with jQuery slide motion. */
+.credits-list details {
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+.credits-list details:last-child { border-bottom: 1px solid var(--line); }
+.credits-list details > summary {
+  min-height: 72px;
+  padding: 16px 0;
+  gap: 18px;
+  color: var(--ink);
+  transition: color .25s ease, padding-left .25s ease;
+}
+.credits-list details > summary:hover { color: var(--clay); padding-left: 5px; }
+.credits-list details > summary:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 5px;
+  border-radius: 2px;
+}
+.credits-list details > summary span {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  transition: transform .38s cubic-bezier(.2,.8,.2,1), background .25s, color .25s;
+}
+.credits-list details[open] > summary span {
+  transform: rotate(45deg);
+  background: var(--gold);
+  color: #1a302b;
+  border-color: var(--gold);
+}
+.credits-list details > ul {
+  overflow: hidden;
+  padding: 0 0 14px 20px;
+}
+.credits-list details > ul li {
+  padding: 8px 0;
+  line-height: 1.65;
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 75%, transparent);
+}
+.credits-list details > ul li:last-child { border-bottom: 0; }
+html[data-theme="dark"] .credits-list details > summary { color: var(--ink); }
+html[data-theme="dark"] .credits-list details > summary:hover { color: #f3b293; }
+html[data-theme="dark"] .credits-list details > ul li { color: #c4d2ca; }
+html[data-theme="dark"] .credits-list details > ul li a { color: #f0d59a; }
+
+/* Route map now comes before the route editor in the Journey page source order. */
+.map-section { position: relative; }
+.builder-section { position: relative; }
+.builder-section .itinerary-panel { transition: box-shadow .35s ease, transform .35s ease; }
+.builder-section .itinerary-panel:hover { box-shadow: 13px 14px 0 rgba(23,46,52,.10); }
+
+/* Passport stamps: a more tactile ink-press response for collect and uncollect. */
+.passport-stamp {
+  backface-visibility: hidden;
+  transform-origin: 50% 60%;
+  will-change: transform, opacity;
+}
+.passport-stamp::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(circle at 86% 20%, rgba(255,229,173,.72), rgba(255,229,173,0) 44%);
+}
+.passport-stamp > *:not(.passport-stamp-photo):not(.passport-stamp-wash) {
+  position: relative;
+  z-index: 3;
+}
+.passport-stamp:after { z-index: 4; }
+.passport-stamp.is-new-stamp {
+  animation: finalStampPress .78s cubic-bezier(.18,.82,.24,1) both;
+}
+.passport-stamp.is-new-stamp::before {
+  animation: finalInkBloom .72s ease-out both;
+}
+.passport-stamp.is-unmarked-stamp {
+  animation: finalStampRelease .62s cubic-bezier(.2,.7,.2,1) both;
+}
+.passport-stamp.is-unmarked-stamp::before {
+  background: radial-gradient(circle at 86% 20%, rgba(255,255,255,.48), rgba(255,255,255,0) 48%);
+  animation: finalInkFade .58s ease-out both;
+}
+.passport-stamp-mark { transition: opacity .22s ease, transform .35s cubic-bezier(.2,.8,.2,1), background .25s; }
+.passport-book.is-stamping { animation: passportBookTap .62s cubic-bezier(.2,.8,.2,1); }
+
+@keyframes finalStampPress {
+  0% { opacity: .72; transform: translateY(9px) scale(1.055) rotate(-2.4deg); filter: saturate(.72) brightness(1.15); }
+  42% { opacity: 1; transform: translateY(-2px) scale(.975) rotate(1deg); filter: saturate(1.2) brightness(1.05); }
+  70% { transform: translateY(1px) scale(1.012) rotate(-.35deg); }
+  100% { opacity: 1; transform: rotate(var(--tilt, 0deg)); filter: none; }
+}
+@keyframes finalInkBloom {
+  0% { opacity: 0; transform: scale(.45); }
+  42% { opacity: .9; transform: scale(1.08); }
+  100% { opacity: 0; transform: scale(1.45); }
+}
+@keyframes finalStampRelease {
+  0% { opacity: 1; transform: rotate(var(--tilt, 0deg)) scale(1.015); filter: saturate(1); }
+  40% { transform: rotate(0) scale(.985); filter: saturate(.7) brightness(1.08); }
+  100% { opacity: 1; transform: none; filter: none; }
+}
+@keyframes finalInkFade {
+  0% { opacity: .65; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.35); }
+}
+
+/* A clean one-page print sheet; hide non-passport content instead of merely making it invisible. */
+@page { size: A4 portrait; margin: 10mm; }
+@media print {
+  body.print-passport { background: #fff !important; color: #172e34 !important; margin: 0 !important; }
+  body.print-passport > .skip-link,
+  body.print-passport > .site-header,
+  body.print-passport > .site-footer,
+  body.print-passport > .lightbox,
+  body.print-passport > .sr-live { display: none !important; }
+  body.print-passport main > section:not(#passport) { display: none !important; }
+  body.print-passport #passport {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    color: #172e34 !important;
+    break-inside: avoid;
+  }
+  body.print-passport #passport:before { display: none !important; }
+  body.print-passport #passport .container { width: 100% !important; max-width: none !important; padding: 0 !important; }
+  body.print-passport .passport-layout { display: block !important; }
+  body.print-passport .passport-intro { display: none !important; }
+  body.print-passport .passport-book {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 7mm !important;
+    box-shadow: none !important;
+    transform: none !important;
+    border: 1px solid #999 !important;
+    break-inside: avoid;
+  }
+  body.print-passport .passport-book-head { padding-bottom: 4mm !important; }
+  body.print-passport .passport-book-head strong { font-size: 18pt !important; }
+  body.print-passport .passport-stamps {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 3mm !important;
+    padding: 5mm 0 !important;
+  }
+  body.print-passport .passport-stamp {
+    min-height: 31mm !important;
+    height: 31mm !important;
+    padding: 2.5mm !important;
+    break-inside: avoid !important;
+    animation: none !important;
+    transform: none !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  body.print-passport .passport-stamp strong { font-size: 10pt !important; }
+  body.print-passport .passport-stamp-country { font-size: 5.5pt !important; }
+  body.print-passport .passport-stamp small { font-size: 5.5pt !important; }
+  body.print-passport .passport-book-foot { padding-top: 3mm !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .credits-list details > summary,
+  .credits-list details > summary span,
+  .passport-stamp,
+  .passport-stamp.is-new-stamp,
+  .passport-stamp.is-unmarked-stamp,
+  .passport-stamp-mark,
+  .passport-book,
+  .builder-section .itinerary-panel { animation: none !important; transition: none !important; }
+}
+
+
+/* Journey section navigation: keep the page tab active and underline My Route
+   only while its matching section is the current viewport section. */
+.site-nav .route-nav-link.is-section-current {
+  color: var(--ink);
+  font-weight: 800;
+}
+.site-nav .route-nav-link.is-section-current::after {
+  transform: scaleX(1);
+}
+.site-nav .route-nav-link.is-section-current .route-count {
+  background: var(--clay);
+  color: #fff;
+  box-shadow: 0 0 0 3px rgba(186, 112, 79, .14);
+}
+#route-builder {
+  scroll-margin-top: 88px;
+}
+@media (max-width: 991.98px) {
+  #route-builder { scroll-margin-top: 70px; }
+}
