@@ -1,6 +1,6 @@
-# Two Worlds, One Journey — Field Archive Endterm Edition
+# Two Worlds, One Journey — Final Field Archive Edition
 
-A three-page, responsive website that extends the original Midterm project into a working interactive front-end experience. The project keeps the same subject, page set and GitHub repository identity: a personal story connecting Afghanistan and Kazakhstan.
+A three-page, responsive final release that extends the original project into a polished, interactive front-end experience. The project keeps the same subject and page set: a personal story connecting Afghanistan and Kazakhstan. The instructor approved a separate repository for the Final release.
 
 ## Creative direction: a living field archive
 
@@ -49,15 +49,15 @@ Then open `http://localhost:8000`. The external library and photograph URLs need
 
 ## Deploying
 
-The assignment requires the same repository as the Midterm. Copy these updated files into the existing repository:
+The instructor approved using a separate repository for the Final release. The approved repository is:
 
-`https://github.com/ehsan08-lmy/Two_Worlds_One_Journey`
+`https://github.com/ehsan08-lmy/2Worlds_1Journey`
 
-The intended GitHub Pages address remains:
+The deployed GitHub Pages site is:
 
-`https://ehsan08-lmy.github.io/Two_Worlds_One_Journey/`
+`https://ehsan08-lmy.github.io/2Worlds_1Journey/`
 
-Commit and push the actual updated project before the deadline; this ZIP has not been pushed to GitHub.
+Copy the final project files into that repository, review the changes, then commit and push them before the deadline. The ZIP itself has not been pushed to GitHub.
 
 ## New files
 
@@ -78,3 +78,19 @@ All JavaScript files pass `node --check`. Static checks confirm that all three p
 - Country and category filters have a more expressive active state; the control frame pulses and the result count fades between updates.
 - The three page-hero sections use subtle, named-location photographs beneath high-contrast overlays so the imagery adds atmosphere without reducing readability.
 - Decorative sticker and photo-caption colors are fixed to accessible high-contrast pairs in both themes.
+
+
+## Final release: Endterm defense feedback addressed
+
+- **Places / photo credits:** the Afghanistan and Kazakhstan photo-credit panels now open and close with a controlled jQuery `slideDown` / `slideUp` animation. They retain native `<details>` semantics for keyboard use and graceful no-JavaScript fallback; only one credit group remains open at a time. Repeated activation clears queued effects with `.stop(true, true)`.
+- **Form validation:** Full name now requires at least a first and last name, permits Unicode letters (including Cyrillic and Persian/Dari scripts), and allows internal hyphens and apostrophes. Phone validation checks 7–15 digits, accepts an optional leading plus and common separators, and rejects malformed parentheses or letters. Errors remain inline and accessible.
+- **Journey order:** the interactive map now appears before the “My route” editor so visitors can explore the map first and then review or adjust their route. The passport follows the route editor.
+- **Travel marks:** passport stamps now animate on both collection and removal with a smoother ink-press / ink-release response. Existing DOM nodes are updated in place, and jQuery effects are stopped before restarting so rapid interactions do not queue up. Reduced-motion preferences are respected.
+- **Passport printing:** print rules isolate the passport instead of merely hiding the rest of the page, with a compact four-column A4 layout intended to avoid the previous multi-page blank output.
+
+## Final checks before publishing
+
+Test all three pages at 375px, 768px and 1280px in both light and dark modes. Verify that the photo-credit panels expand/collapse with keyboard and pointer input, the Full name and Phone fields show the correct inline errors, map pins add places, route items can be reordered and removed, passport stamps respond to collection changes, and the passport print preview is compact. Confirm there are no console errors or missing local assets.
+
+### Journey page section navigation
+The Travel Marks passport spread is kept in its original place in the Journey narrative. The map is followed by the My Route builder. While the My Route section is in view, the top navigation underlines the My Route link as the current section; My Journey remains identified as the current page.
