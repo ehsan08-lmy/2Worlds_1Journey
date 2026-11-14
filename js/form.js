@@ -5,9 +5,36 @@
     const form = $("#journeyForm");
     if (!form) return;
     const fields = {
-      visitorName: { element: $("#visitorName"), validate: (value) => value.trim().length >= 2 ? "" : "Please enter at least 2 characters." },
+      visitorName: {
+        element: $("#visitorName"),
+        validate: (value) => {
+          const name = value.trim().replace(/\s+/g, " ");
+          if (name.length < 3) return "Enter your first and last name.";
+          if (name.length > 60) return "Your full name must be 60 characters or fewer.";
+          // Unicode letters support names written in Latin, Cyrillic, Dari/Persian and other scripts.
+          // Spaces separate name parts; internal hyphens and apostrophes are allowed.
+          const part = /^(?=.*\p{L}.*\p{L})\p{L}[\p{L}\p{M}]*(?:[’'-]\p{L}[\p{L}\p{M}]*)*$/u;
+          const parts = name.split(" ");
+          return parts.length >= 2 && parts.length <= 4 && parts.every((item) => part.test(item))
+            ? "" : "Enter at least a first name and a last name. Use letters; hyphens and apostrophes are allowed.";
+        }
+      },
       visitorEmail: { element: $("#visitorEmail"), validate: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value.trim()) ? "" : "Enter a valid email address." },
-      visitorPhone: { element: $("#visitorPhone"), validate: (value) => { const digits = value.replace(/\D/g, ""); return /^\+?[0-9\s()\-]+$/.test(value.trim()) && digits.length >= 7 && digits.length <= 15 ? "" : "Enter a valid phone number with 7–15 digits."; } },
+      visitorPhone: {
+        element: $("#visitorPhone"),
+        validate: (value) => {
+          const phone = value.trim();
+          const digits = phone.replace(/\D/g, "");
+          const allowedFormat = /^\+?[0-9\s().-]+$/.test(phone);
+          const openCount = (phone.match(/\(/g) || []).length;
+          const closeCount = (phone.match(/\)/g) || []).length;
+          const bracketsValid = openCount === closeCount && openCount <= 1 &&
+            (openCount === 0 || (phone.indexOf("(") < phone.indexOf(")") && /\(\s*\d[\d\s.-]*\)/.test(phone)));
+          if (!allowedFormat || !bracketsValid) return "Use digits and optional spaces, hyphens, parentheses or one leading + sign.";
+          if (digits.length < 7 || digits.length > 15) return "Enter a phone number containing 7 to 15 digits, including the country code.";
+          return "";
+        }
+      },
       departureDate: { element: $("#departureDate"), validate: (value) => { if (!value) return "Choose a preferred date."; const chosen = new Date(`${value}T00:00:00`); const today = new Date(); today.setHours(0,0,0,0); return chosen >= today ? "" : "Choose today or a future date."; } },
       tripDays: { element: $("#tripDays"), validate: (value) => Number.isInteger(Number(value)) && Number(value) >= 1 && Number(value) <= 21 ? "" : "Enter a whole number from 1 to 21." },
       tripFocus: { element: $("#tripFocus"), validate: (value) => value ? "" : "Choose one area of interest." },

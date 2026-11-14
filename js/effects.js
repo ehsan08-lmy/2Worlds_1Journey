@@ -24,6 +24,36 @@
       button.setAttribute("aria-expanded", String(willOpen));
     });
 
+    // Effect 2b: photograph-credit accordions use jQuery slide animation.
+    // Keep native <details> semantics for keyboard and no-JS access; jQuery only enhances motion.
+    jq(document).on("click", ".credits-list details > summary", function (event) {
+      event.preventDefault();
+      const details = this.parentElement;
+      const panel = jq(details).children("ul");
+      const duration = calm ? 0 : 360;
+
+      jq(".credits-list details[open]").not(details).each(function () {
+        const other = this;
+        const otherPanel = jq(other).children("ul");
+        otherPanel.stop(true, true).slideUp(duration, function () {
+          other.open = false;
+          jq(this).css("display", "");
+        });
+      });
+
+      if (details.open) {
+        panel.stop(true, true).slideUp(duration, function () {
+          details.open = false;
+          jq(this).css("display", "");
+        });
+      } else {
+        details.open = true;
+        panel.stop(true, true).hide().slideDown(duration, function () {
+          jq(this).css("display", "");
+        });
+      }
+    });
+
     // Effect 3: route constellation can be explored with a horizontal trackpad or mouse wheel.
     jq(document).on("wheel", ".route-ribbon-viewport", function (event) {
       const original = event.originalEvent;
